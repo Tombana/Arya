@@ -50,6 +50,7 @@ namespace Arya
             if(callbackLogLevel & currentLogLevel)
                 callbackFunc(streambuff.str());
 
+        currentLogLevel = L_NONE;
         streambuff.str(std::string());
         streambuff.seekp(0);
         streambuff.clear();

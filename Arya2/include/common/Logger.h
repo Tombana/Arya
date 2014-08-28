@@ -74,30 +74,36 @@ namespace Arya
     };
 
     inline Logger& operator<<(Logger& logger, LOGLEVEL lvl){
-        logger.currentLogLevel = lvl;
-        //Reset the stringstream
-        logger.streambuff.str(std::string());
-        logger.streambuff.seekp(0);
-        logger.streambuff.clear();
-        switch(lvl){
-            case L_CRITICALERROR:
-                logger.streambuff << "Critical ERROR: ";
-                break;
-            case L_ERROR:
-                logger.streambuff << "ERROR: ";
-                break;
-            case L_WARNING:
-                logger.streambuff << "Warning: ";
-                break;
-            case L_INFO:
-                logger.streambuff << "Info: ";
-                break;
-            case L_DEBUG:
-                logger.streambuff << "Debug: ";
-                break;
-            default:
-                break;
-        };
+        //This construction allows the following:
+        //LogWarning << "test1";
+        //LogWarning << "test2" << endLog;
+        //so that Warning is only displayed once
+        if( logger.currentLogLevel == L_NONE ) {
+            logger.currentLogLevel = lvl;
+            //Reset the stringstream
+            logger.streambuff.str(std::string());
+            logger.streambuff.seekp(0);
+            logger.streambuff.clear();
+            switch(lvl){
+                case L_CRITICALERROR:
+                    logger.streambuff << "Critical ERROR: ";
+                    break;
+                case L_ERROR:
+                    logger.streambuff << "ERROR: ";
+                    break;
+                case L_WARNING:
+                    logger.streambuff << "Warning: ";
+                    break;
+                case L_INFO:
+                    logger.streambuff << "Info: ";
+                    break;
+                case L_DEBUG:
+                    logger.streambuff << "Debug: ";
+                    break;
+                default:
+                    break;
+            };
+        }
         return logger;
     }
 

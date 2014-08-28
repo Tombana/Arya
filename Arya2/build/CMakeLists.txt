@@ -36,6 +36,7 @@ SET(LIB_NAME "Arya")
 SET(
     LIB_SOURCES
     "../src/common/Logger.cpp"
+    "../src/AnimationVertex.cpp"
     "../src/Camera.cpp"
     "../src/Entity.cpp"
     "../src/EntitySystem.cpp"
@@ -44,6 +45,7 @@ SET(
     "../src/InputSystem.cpp"
     "../src/Interface.cpp"
     "../src/Locator.cpp"
+    "../src/Models.cpp"
     "../src/Renderer.cpp"
     "../src/Root.cpp"
     "../src/Shaders.cpp"
