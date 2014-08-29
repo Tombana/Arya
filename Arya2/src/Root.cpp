@@ -4,6 +4,7 @@
 #include "InputSystem.h"
 #include "Interface.h"
 #include "Locator.h"
+#include "Models.h"
 #include "Root.h"
 #include "World.h"
 
@@ -32,6 +33,8 @@ namespace Arya
         interface = new Interface;
         graphics = new Graphics;
         inputSystem = new InputSystem;
+        modelManager = new ModelManager;
+        Locator::provide(modelManager);
 
         loopRunning = false;
         windowWidth = 0;
@@ -42,13 +45,15 @@ namespace Arya
 
     Root::~Root()
     {
+        delete modelManager;
         delete inputSystem;
         delete graphics;
         delete interface;
         delete world;
-
         delete fileSystem;
+        modelManager = 0;
         fileSystem = 0;
+        Locator::provide(modelManager);
         Locator::provide(fileSystem);
 
         if( sdlValues->context ) SDL_GL_DeleteContext(sdlValues->context);

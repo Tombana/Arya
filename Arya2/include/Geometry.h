@@ -1,4 +1,9 @@
 //See Models.h for explanation of Mesh,Material,Geometry system
+//Geometry holds the OpenGL data for a piece of geometry
+//meaning the vertex buffer objects and so on
+//
+//This Geometry class is one specific for OpenGL but it should
+//be so general that it can be replaced by a DirectX one
 #pragma once
 
 #include <GL/glew.h>

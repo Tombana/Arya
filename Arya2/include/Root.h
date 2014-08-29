@@ -9,6 +9,7 @@ namespace Arya
     class Graphics;
     class Interface;
     class FileSystem;
+    class ModelManager;
 
     struct SDLValues; //This prevents including SDL headers here
 
@@ -42,6 +43,7 @@ namespace Arya
             Graphics*    graphics;
             InputSystem* inputSystem;
             FileSystem*  fileSystem;
+            ModelManager* modelManager;
 
             bool loopRunning;
 

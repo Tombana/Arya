@@ -42,6 +42,7 @@ SET(
     "../src/Entity.cpp"
     "../src/EntitySystem.cpp"
     "../src/Files.cpp"
+    "../src/Geometry.cpp"
     "../src/Graphics.cpp"
     "../src/InputSystem.cpp"
     "../src/Interface.cpp"
