@@ -81,4 +81,11 @@ namespace Arya
         glVertexAttribPointer(attribArrayIndex, components, GL_FLOAT, GL_FALSE,
                 stride, reinterpret_cast<GLubyte*>(offset));
     }
+
+    void Geometry::draw(int frame)
+    {
+        glBindVertexArray(vaoHandles[frame]);
+        glDrawArrays(primitiveType, 0, vertexCount);
+    }
+
 }

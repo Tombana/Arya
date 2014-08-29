@@ -15,6 +15,7 @@ namespace Arya
 
             Entity* createEntity();
 
+            const list<Entity*>& getEntities() const { return entities; }
         private:
 
             list<Entity*> entities;

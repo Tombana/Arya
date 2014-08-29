@@ -34,6 +34,8 @@ namespace Arya
             void setVAOdata(int attribArrayIndex, int components,
                     int stride, int offset);
 
+            void draw(int frame = 0);
+
             int frameCount; //1 for static models
             GLsizei vertexCount; //PER FRAME
             GLsizei indexCount;

@@ -211,6 +211,8 @@ namespace Arya
     void Root::render()
     {
         graphics->clear(getWindowWidth(), getWindowHeight());
+        graphics->render(world);
+        //graphics->render(interface);
     }
 
     void Root::windowResized(int newWidth, int newHeight)

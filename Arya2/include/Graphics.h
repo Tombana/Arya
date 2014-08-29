@@ -2,6 +2,7 @@
 
 namespace Arya
 {
+    class World;
     class Renderer;
     class Camera;
     class MaterialSystem;
@@ -19,7 +20,7 @@ namespace Arya
             void clear(int width, int height);
 
             //TODO: World* or some list of GraphicsComponent as argument
-            void render();
+            void render(World* world);
 
             //! Update camera
             void update(float elapsed);
