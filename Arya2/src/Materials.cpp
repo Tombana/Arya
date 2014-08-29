@@ -1,4 +1,6 @@
 #include "Materials.h"
+#include "Locator.h"
+#include "Textures.h"
 #include "Files.h"
 #include "common/Logger.h"
 
@@ -12,9 +14,14 @@ namespace Arya
 
     Material* MaterialManager::loadResource(string filename)
     {
-        Material* result = new Material();
-        addResource(filename, result);
-        return result;
+        LogWarning << "TODO: Fix Material loading." << endLog;
+
+        Material* mat = new Material(filename,
+                Locator::getTextureManager().getTexture(filename),
+                "default", 1.0, 1.0, 0.3, 0.7);
+        addResource(filename, mat);
+        return mat;
+
         //string name=filename.substr(0,filename.size()-4);
         //string type;
         //float a,b,c,d;
@@ -28,9 +35,6 @@ namespace Arya
         //    str >> type >> a >> b >> c >> d;
         //    FileSystem::shared().releaseFile(mattyfile);
         //}
-        //Material* result=new Material(name , TextureManager::shared().getTexture(filename), type, a, b, c, d);
-        //addResource(filename, result);
-        //return result;
     }
 
     void MaterialManager::cleanup()

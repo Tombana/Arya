@@ -7,6 +7,7 @@
 #include "Materials.h"
 #include "Models.h"
 #include "Root.h"
+#include "Textures.h"
 #include "World.h"
 
 #include <SDL2/SDL.h>
@@ -36,8 +37,10 @@ namespace Arya
         inputSystem = new InputSystem;
         modelManager = new ModelManager;
         materialManager = new MaterialManager;
+        textureManager = new TextureManager;
         Locator::provide(modelManager);
         Locator::provide(materialManager);
+        Locator::provide(textureManager);
 
         loopRunning = false;
         windowWidth = 0;
@@ -48,6 +51,7 @@ namespace Arya
 
     Root::~Root()
     {
+        delete textureManager;
         delete materialManager;
         delete modelManager;
         delete inputSystem;
@@ -55,10 +59,12 @@ namespace Arya
         delete interface;
         delete world;
         delete fileSystem;
+        textureManager = 0;
         materialManager = 0;
         modelManager = 0;
         fileSystem = 0;
         //Unset the Locator pointers
+        Locator::provide(textureManager);
         Locator::provide(materialManager);
         Locator::provide(modelManager);
         Locator::provide(fileSystem);
