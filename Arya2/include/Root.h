@@ -10,6 +10,7 @@ namespace Arya
     class Interface;
     class FileSystem;
     class ModelManager;
+    class MaterialManager;
 
     struct SDLValues; //This prevents including SDL headers here
 
@@ -36,6 +37,9 @@ namespace Arya
             Interface*   getInterface() const { return interface; }
             Graphics*    getGraphics() const { return graphics; }
             InputSystem* getInputSystem() const { return inputSystem; }
+            FileSystem*  getFileSystem() const { return fileSystem; }
+            ModelManager* getModelManager() const { return modelManager; }
+            MaterialManager* getMaterialManager() const { return materialManager; }
 
         private:
             World*       world;
@@ -44,6 +48,7 @@ namespace Arya
             InputSystem* inputSystem;
             FileSystem*  fileSystem;
             ModelManager* modelManager;
+            MaterialManager* materialManager;
 
             bool loopRunning;
 

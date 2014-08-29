@@ -14,35 +14,35 @@ namespace Arya
     class Geometry
     {
         public:
+            Geometry();
+            ~Geometry();
+
             void addRef(){ refCount++; }
             void release(){ refCount--; }
             int getRefCount() const { return refCount; }
 
             bool isAnimated() const { return frameCount > 1; }
 
+            void createVertexBuffer();
+            void createIndexBuffer();
+            void setVertexBufferData(int size, void* data);
+            void setIndexBufferData(int size, void* data);
+
             void createVAOs(int frameCount);
 
-            //GLuint getVAO() { return vaoHandle; }
-            //GLuint getVertexBuffer() { return vertexBuffer; }
-            //GLsizei getVertexCount() { return vertexCount; }
-            //GLenum getPrimitiveType() { return primitiveType; }
+            void bindVAO(int vaoIndex);
+            void setVAOdata(int attribArrayIndex, int components,
+                    int stride, int offset);
 
             int frameCount; //1 for static models
-            GLuint* vaoHandles; //a list of framecount handles
-            GLuint vertexBuffer;
             GLsizei vertexCount; //PER FRAME
-            GLuint indexBuffer;
             GLsizei indexCount;
             GLenum primitiveType;
-
         private:
-            int refCount;
+            GLuint* vaoHandles; //a list of framecount handles
+            GLuint vertexBuffer;
+            GLuint indexBuffer;
 
-            //Only Model and ModelManger can create meshes
-            friend class ModelManager;
-            friend class Model;
-            friend class Mesh;
-            Geometry();
-            ~Geometry();
+            int refCount;
     };
 }

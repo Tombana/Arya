@@ -4,6 +4,7 @@
 #include "InputSystem.h"
 #include "Interface.h"
 #include "Locator.h"
+#include "Materials.h"
 #include "Models.h"
 #include "Root.h"
 #include "World.h"
@@ -34,7 +35,9 @@ namespace Arya
         graphics = new Graphics;
         inputSystem = new InputSystem;
         modelManager = new ModelManager;
+        materialManager = new MaterialManager;
         Locator::provide(modelManager);
+        Locator::provide(materialManager);
 
         loopRunning = false;
         windowWidth = 0;
@@ -45,14 +48,18 @@ namespace Arya
 
     Root::~Root()
     {
+        delete materialManager;
         delete modelManager;
         delete inputSystem;
         delete graphics;
         delete interface;
         delete world;
         delete fileSystem;
+        materialManager = 0;
         modelManager = 0;
         fileSystem = 0;
+        //Unset the Locator pointers
+        Locator::provide(materialManager);
         Locator::provide(modelManager);
         Locator::provide(fileSystem);
 

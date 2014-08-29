@@ -47,6 +47,7 @@ SET(
     "../src/InputSystem.cpp"
     "../src/Interface.cpp"
     "../src/Locator.cpp"
+    "../src/Materials.cpp"
     "../src/Models.cpp"
     "../src/Renderer.cpp"
     "../src/Root.cpp"

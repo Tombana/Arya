@@ -274,38 +274,28 @@ namespace Arya
             for(int s = 0; s < header->submeshCount; ++s)
             {
                 Mesh* mesh = model->createMesh();
+                mesh->setMaterial(materials[header->submesh[s].materialIndex]);
+
                 Geometry* geometry = new Geometry();
                 mesh->setGeometry(geometry); //adds refcount
 
                 geometry->primitiveType = header->submesh[s].primitiveType;
                 geometry->vertexCount = header->submesh[s].vertexCount;
+                geometry->indexCount = header->submesh[s].indexCount;
                 geometry->frameCount = header->frameCount;
-
-                mesh->setMaterial(materials[header->submesh[s].materialIndex]);
 
                 int floatCount = header->submesh[s].hasNormals ? 8 : 5;
                 int frameBytes = geometry->vertexCount * floatCount * sizeof(GLfloat);
 
-                glGenBuffers(1, &geometry->vertexBuffer);
-                glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
-                glBufferData(GL_ARRAY_BUFFER,
-                        geometry->frameCount * frameBytes,
-                        modelfile->getData() + header->submesh[s].bufferOffset,
-                        GL_STATIC_DRAW);
-                if( header->submesh[s].indexCount > 0 )
+                geometry->createVertexBuffer();
+                geometry->setVertexBufferData(geometry->frameCount * frameBytes,
+                        modelfile->getData() + header->submesh[s].bufferOffset);
+
+                if( geometry->indexCount > 0 )
                 {
-                    geometry->indexCount = header->submesh[s].indexCount;
-                    glGenBuffers(1, &geometry->indexBuffer);
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->indexBuffer);
-                    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                            sizeof(GLuint) * geometry->indexCount,
-                            modelfile->getData() + header->submesh[s].indexbufferOffset,
-                            GL_STATIC_DRAW);
-                }
-                else
-                {
-                    geometry->indexCount = 0;
-                    geometry->indexBuffer = 0;
+                    geometry->createIndexBuffer();
+                    geometry->setIndexBufferData(sizeof(GLuint) * geometry->indexCount,
+                            modelfile->getData() + header->submesh[s].indexbufferOffset);
                 }
 
                 //Create a VAO for every frame
@@ -315,26 +305,17 @@ namespace Arya
                 if( geometry->frameCount == 1 )
                 {
                     //Not animated
-                    glBindVertexArray(geometry->vaoHandles[0]);
-                    glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
-
-                    glEnableVertexAttribArray(0); //pos
-                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(0));
-                    glEnableVertexAttribArray(1); //tex
-                    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(12));
+                    geometry->bindVAO(0);
+                    geometry->setVAOdata(0, 3, stride, 0); //pos
+                    geometry->setVAOdata(1, 2, stride, 12);//tex
                     if(header->submesh[s].hasNormals)
-                    {
-                        glEnableVertexAttribArray(2); //norm
-                        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(20));
-                    }
-                    if(geometry->indexCount > 0)
-                        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->indexBuffer);
+                        geometry->setVAOdata(2, 3, stride, 20);
                 }
                 else
                 {
                     //Animated
                     //We actually have to parse the list of animations here
-                    //because the endFrame of one animation should have startFrame as 'nextFrame'
+                    //because the endFrame of one animation will have startFrame as 'nextFrame'
                     for(int f = 0; f < geometry->frameCount; ++f)
                     {
                         int nextf = (f+1)%geometry->frameCount;
@@ -349,29 +330,16 @@ namespace Arya
                                 }
                             }
                         }
-
-                        glBindVertexArray(geometry->vaoHandles[f]);
-                        glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
-
-                        glEnableVertexAttribArray(0); //pos
-                        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(f*frameBytes + 0));
-
-                        glEnableVertexAttribArray(3); //next pos
-                        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(nextf*frameBytes + 0));
-
-                        glEnableVertexAttribArray(1); //tex
-                        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(f*frameBytes + 12));
-
+                        
+                        geometry->bindVAO(f);
+                        geometry->setVAOdata(0, 3, stride, f*frameBytes + 0); //pos
+                        geometry->setVAOdata(3, 3, stride, nextf*frameBytes + 0); //next pos
+                        geometry->setVAOdata(1, 2, stride, f*frameBytes + 12); //tex
                         if(header->submesh[s].hasNormals)
                         {
-                            glEnableVertexAttribArray(2); //norm
-                            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(f*frameBytes + 20));
-
-                            glEnableVertexAttribArray(4); //next norm
-                            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<GLubyte*>(nextf*frameBytes + 20));
+                            geometry->setVAOdata(2, 3, stride, f*frameBytes + 20); //norm
+                            geometry->setVAOdata(4, 3, stride, nextf*frameBytes + 20); //next norm
                         }
-                        if(geometry->indexCount > 0)
-                            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->indexBuffer);
                     }
                 }
             }

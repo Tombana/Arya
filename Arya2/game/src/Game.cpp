@@ -21,7 +21,12 @@ bool Game::init()
     }
 
     root->getInputSystem()->bind(INPUT_KEYDOWN, [](int key){ LogInfo << "Game got keydown: " << key << endLog; });
-    root->getInputSystem()->bind(INPUT_KEYUP, [](int key){ LogInfo << "Game got keyup: " << key << endLog; });
+
+    root->getInputSystem()->bind('a', [](bool down) { LogInfo << "You " << (down ? "pressed" : "released") << " a !" << endLog; } );
+    root->getInputSystem()->bind('q', [this](bool down) { if(!down) root->stopGameLoop(); });
+
+    Arya::Model* model = root->getModelManager()->getModel("ogros.aryamodel");
+    if(model) model->getBoundingBoxVertex(2);
 
     return true;
 }

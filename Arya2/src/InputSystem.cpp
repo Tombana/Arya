@@ -105,7 +105,7 @@ namespace Arya
                     if( bindingKeyUp )
                         bindingKeyUp((int)event.key.keysym.sym);
                     auto f = bindingKey.find(event.key.keysym.sym);
-                    if( f != bindingKey.end() ) f->second(true);
+                    if( f != bindingKey.end() ) f->second(false);
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
