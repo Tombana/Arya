@@ -43,6 +43,11 @@ namespace Arya
             LogWarning << "Trying to bind event with invalid function signature or invalid event type" << endLog;
     }
 
+    void InputSystem::bind(int key, function<void(bool)> f)
+    {
+        bindingKey[key] = f;
+    }
+
     void InputSystem::unbind(INPUTEVENT event)
     {
         switch(event) {
@@ -69,6 +74,13 @@ namespace Arya
         }
     }
 
+    void InputSystem::unbind(int key)
+    {
+        auto f = bindingKey.find(key);
+        if( f == bindingKey.end() ) return;
+        bindingKey.erase(f);
+    }
+
     MOUSEBUTTON translateButton(Uint8 btn)
     {
         if( btn == SDL_BUTTON_LEFT )   return MOUSEBUTTON_LEFT;
@@ -81,12 +93,20 @@ namespace Arya
     {
         switch(event.type) {
             case SDL_KEYDOWN:
-                if( bindingKeyDown )
-                    bindingKeyDown((int)event.key.keysym.sym);
+                {
+                    if( bindingKeyDown )
+                        bindingKeyDown((int)event.key.keysym.sym);
+                    auto f = bindingKey.find(event.key.keysym.sym);
+                    if( f != bindingKey.end() ) f->second(true);
+                }
                 break;
             case SDL_KEYUP:
-                if( bindingKeyUp )
-                    bindingKeyUp((int)event.key.keysym.sym);
+                {
+                    if( bindingKeyUp )
+                        bindingKeyUp((int)event.key.keysym.sym);
+                    auto f = bindingKey.find(event.key.keysym.sym);
+                    if( f != bindingKey.end() ) f->second(true);
+                }
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 if( bindingMouseDown ) {
