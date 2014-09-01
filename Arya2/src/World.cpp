@@ -1,4 +1,5 @@
 #include "World.h"
+#include "Entity.h"
 #include "EntitySystem.h"
 #include "Terrain.h"
 
@@ -18,4 +19,9 @@ namespace Arya
         delete entitySystem;
     }
 
+    void World::update(float elapsedTime)
+    {
+        const list<Entity*> ents = entitySystem->getEntities();
+        for(auto ent : ents) ent->update(elapsedTime);
+    }
 }

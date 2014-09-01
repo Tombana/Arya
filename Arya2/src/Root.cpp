@@ -116,7 +116,9 @@ namespace Arya
             return false;
         }
 
-        if( !graphics->init(windowWidth, windowHeight) ) return false;
+        if (!graphics->init(windowWidth, windowHeight)) return false;
+        if (!textureManager->init()) return false;
+        if (!materialManager->init()) return false;
         //if( !inputSystem->init() ) return false;
         //if( !interface->init() ) return false;
         //if( !world->init() ) return false;
@@ -137,10 +139,11 @@ namespace Arya
             render();
 
             int pollTime = SDL_GetTicks();
-            float elapsed = pollTime - timer;
+            float elapsed = 0.001f*(pollTime - timer);
             timer = pollTime;
 
             callback(elapsed);
+            world->update(elapsed);
             graphics->update(elapsed);
 
             handleEvents();

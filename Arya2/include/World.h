@@ -16,6 +16,8 @@ namespace Arya
             Terrain*      getTerrain() const { return terrain; }
             Skybox*       getSkybox() const { return skybox; }
 
+            void update(float elapsedTime);
+
         private:
             EntitySystem*   entitySystem;
             Terrain*        terrain;

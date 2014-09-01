@@ -14,10 +14,10 @@ namespace Arya
         cleanup();
     }
 
-    int TextureManager::initialize(){
+    bool TextureManager::init(){
         loadDefaultTexture();
         loadWhiteTexture();
-        return 1;
+        return true;
     }
 
     void TextureManager::cleanup(){

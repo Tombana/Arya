@@ -6,6 +6,11 @@
 
 namespace Arya
 {
+    bool MaterialManager::init()
+    {
+        return true;
+    }
+
     void MaterialManager::loadMaterials(const vector<string>& filenames)
     {
         for(unsigned int i=0; i<filenames.size(); i++)

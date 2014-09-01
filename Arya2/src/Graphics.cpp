@@ -1,4 +1,5 @@
 #include "common/Logger.h"
+#include "AnimationVertex.h"
 #include "Camera.h"
 #include "Entity.h"
 #include "EntitySystem.h"
@@ -64,13 +65,13 @@ namespace Arya
 
         const list<Entity*>& entities = world->getEntitySystem()->getEntities();
         for(auto ent : entities) {
-            if(ent->graphicsComponent == 0) continue;
-
-            ModelGraphicsComponent* grComp = (ModelGraphicsComponent*)ent->graphicsComponent;
+            GraphicsComponent* gr = ent->getGraphics();
+            if (!gr) continue;
 
             //TODO: Everything done below should be done in a general
             // "RenderSpec" way
-            Model* model = grComp->model;
+            Model* model = gr->getModel();
+            if(!model) continue;
 
             //TODO: Investigate the bounding box and also check onScreen.z ?
             //mat4 totalMatrix = camera->getVPMatrix() * ent->getMoveMatrix();
@@ -94,11 +95,11 @@ namespace Arya
 
             int frame = 0;
             float interpolation = 0.0f;
-            AnimationState* animState = grComp->getAnimationState();
+            AnimationState* animState = gr->getAnimationState();
             if(animState)
             {
-            //    frame = animState->getCurFrame();
-            //    interpolation = animState->getInterpolation();
+                frame = animState->getCurFrame();
+                interpolation = animState->getInterpolation();
             }
             defaultShader->setUniform1f("interpolation", interpolation);
 

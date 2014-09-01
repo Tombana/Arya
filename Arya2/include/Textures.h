@@ -26,7 +26,7 @@ namespace Arya
             TextureManager();
             ~TextureManager();
 
-            int initialize();
+            bool init();
             void cleanup();
 
             //If no texture found it will return 0

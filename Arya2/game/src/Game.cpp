@@ -43,6 +43,7 @@ bool Game::init()
     Entity* ent = root->getWorld()->getEntitySystem()->createEntity();
     ent->setPosition(vec3(0,0,0));
     ent->setModel(model);
+    ent->getGraphics()->setAnimation("run");
 
     return true;
 }

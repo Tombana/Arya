@@ -50,6 +50,7 @@ namespace Arya
             MaterialManager(){}
             ~MaterialManager(){cleanup();}
 
+            bool init();
             void cleanup();
 
             void loadMaterials(const vector<string>& filenames);

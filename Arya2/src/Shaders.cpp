@@ -49,7 +49,7 @@ namespace Arya
                 default: LogError << "Error compiling shader: Invalid type." << endLog; return false;
             }
 
-            GLchar** gl_sources = new GLchar*[sources.size()];
+            const GLchar** gl_sources = new const GLchar*[sources.size()];
             GLint* lengths = new GLint[sources.size()];
             for(unsigned int i = 0; i < sources.size(); ++i) {
                 gl_sources[i] = sources[i]->getData();

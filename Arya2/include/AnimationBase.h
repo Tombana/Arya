@@ -24,11 +24,12 @@ namespace Arya
             virtual void setAnimation(string name) = 0;
             virtual void updateAnimation(float elapsedTime) = 0;
 
-            //TODO: Move this to subclass??
-        protected:
+            //TODO:
+            //the frame thing is actually only for vertex based animations
+            //so we could move it to a subclass. But then Graphics
+            //can not access it :/
             virtual int getCurFrame() = 0;
             virtual float getInterpolation() = 0;
-
             //For currently set animation:
             virtual float getAnimationTime() = 0;
             //Change speed of current animation
