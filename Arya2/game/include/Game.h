@@ -16,4 +16,6 @@ class Game
         bool pressedRight;
 
         void update(float dt);
+
+        int test;
 };

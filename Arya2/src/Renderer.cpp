@@ -30,6 +30,9 @@ namespace Arya
         if (!GLEW_VERSION_3_1)
             LogWarning << "No OpenGL 3.1 support! Continuing" << endLog;
 
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+
         return true;
     }
 

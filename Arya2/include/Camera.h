@@ -75,9 +75,9 @@ namespace Arya
             float camYawSpeed;
             float camPitchSpeed;
 
-            mat4 getVMatrix();
-            mat4 getVPMatrix();
-            mat4 getInverseVPMatrix();
+            const mat4& getVMatrix();
+            const mat4& getVPMatrix();
+            const mat4& getInverseVPMatrix();
 
             //! Checks if a box is visible, used for culling
             bool isBoxVisible(int minX, int maxX, int minY, int maxY, int minZ, int maxZ);

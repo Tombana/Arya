@@ -24,11 +24,6 @@ bool Game::init()
     //            LogInfo << "Game got keydown: " << key << endLog;
     //        });
 
-    root->getInputSystem()->bind('a',
-            [](bool down) {
-                LogInfo << "You " << (down ? "pressed" : "released") << " a !" << endLog;
-            });
-
     root->getInputSystem()->bind('q',
             [this](bool down) {
                 if(!down) root->stopGameLoop();
@@ -50,15 +45,13 @@ bool Game::init()
 
 void Game::run()
 {
-    // enter game loop
-    // root returns false if engine closed
-    root->gameLoop( std::bind(&Game::update, *this, std::placeholders::_1) );
+    root->gameLoop( std::bind(&Game::update, this, std::placeholders::_1) );
 }
 
 void Game::update(float dt)
 {
     Arya::Camera* cam = root->getGraphics()->getCamera();
 
-    if (pressedLeft && !pressedRight) cam->rotate(0.1f*dt, 0);
-    else if (pressedRight && !pressedLeft) cam->rotate(-0.1f*dt, 0);
+    if (pressedLeft && !pressedRight) cam->rotate(1.5f*dt, 0);
+    else if (pressedRight && !pressedLeft) cam->rotate(-1.5f*dt, 0);
 }

@@ -169,24 +169,23 @@ namespace Arya
         return;
     }
 
-    mat4 Camera::getVMatrix()
+    const mat4& Camera::getVMatrix()
     {
         updateViewProjectionMatrix();
         return viewMatrix;
     }
 
-    mat4 Camera::getVPMatrix()
+    const mat4& Camera::getVPMatrix()
     {
         updateViewProjectionMatrix();
         return vpMatrix;
     }
 
-    mat4 Camera::getInverseVPMatrix()
+    const mat4& Camera::getInverseVPMatrix()
     {
         updateInverseMatrix();
         return inverseVPMatrix;
     }
-
 
     void Camera::deAccelerate(float& Speed, float Acceleration)
     {
