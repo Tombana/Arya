@@ -4,6 +4,8 @@ using namespace Arya;
 Game::Game()
 {
     pressedLeft = pressedRight = false;
+    totalTime = 0;
+    entityCreated = false;
 }
 
 Game::~Game()
@@ -20,17 +22,10 @@ bool Game::init()
     }
 
     Arya::InputSystem* input = root->getInputSystem();
-    input->bind('q', [this](bool down) { if(!down) root->stopGameLoop(); });
-    input->bind('a', [this](bool down) { pressedLeft = down; });
-    input->bind('d', [this](bool down) { pressedRight = down; });
+    input->bind("Q", [this](bool down) { if(!down) root->stopGameLoop(); });
+    input->bind("A", [this](bool down) { pressedLeft = down; });
+    input->bind("D", [this](bool down) { pressedRight = down; });
 
-    Arya::Model* model = root->getModelManager()->getModel("ogros.aryamodel");
-    if(model) model->getBoundingBoxVertex(2);
-
-    Entity* ent = root->getWorld()->getEntitySystem()->createEntity();
-    ent->setPosition(vec3(0,0,0));
-    ent->setModel(model);
-    ent->getGraphics()->setAnimation("run");
 
     return true;
 }
@@ -42,8 +37,25 @@ void Game::run()
 
 void Game::update(float dt)
 {
-    Arya::Camera* cam = root->getGraphics()->getCamera();
+    totalTime += dt;
 
+    //We only create the entity after 0.5 seconds so that
+    //the game first shows the window with black screen
+    //instead of waiting to load all files
+    //Step one towards a loading screen ;)
+    if (!entityCreated && totalTime > 0.5f) {
+        entityCreated = true;
+
+        Arya::Model* model = root->getModelManager()->getModel("ogros.aryamodel");
+        if(model) model->getBoundingBoxVertex(2);
+
+        Entity* ent = root->getWorld()->getEntitySystem()->createEntity();
+        ent->setPosition(vec3(0,0,0));
+        ent->setModel(model);
+        ent->getGraphics()->setAnimation("run");
+    }
+
+    Arya::Camera* cam = root->getGraphics()->getCamera();
     if (pressedLeft && !pressedRight) cam->rotate(1.5f*dt, 0);
     else if (pressedRight && !pressedLeft) cam->rotate(-1.5f*dt, 0);
 }

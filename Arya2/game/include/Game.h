@@ -16,4 +16,7 @@ class Game
         bool pressedRight;
 
         void update(float dt);
+
+        float totalTime;
+        bool entityCreated;
 };

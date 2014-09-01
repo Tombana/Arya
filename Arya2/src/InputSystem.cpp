@@ -1,6 +1,10 @@
 #include "InputSystem.h"
 #include "common/Logger.h"
+#include <string>
+#include <algorithm>
 #include <SDL2/SDL.h>
+using std::string;
+using std::transform;
 
 namespace Arya
 {
@@ -43,9 +47,15 @@ namespace Arya
             LogWarning << "Trying to bind event with invalid function signature or invalid event type" << endLog;
     }
 
-    void InputSystem::bind(int key, function<void(bool)> f)
+    void InputSystem::bind(const char* key, function<void(bool)> f)
     {
-        bindingKey[key] = f;
+        InputKey k;
+        if (!k.parseKey(key)) {
+            LogWarning << "Unable to bind key. Could not parse: " << key << endLog;
+            return;
+        }
+        bindingKey[k] = f;
+        return;
     }
 
     void InputSystem::unbind(INPUTEVENT event)
@@ -74,9 +84,14 @@ namespace Arya
         }
     }
 
-    void InputSystem::unbind(int key)
+    void InputSystem::unbind(const char* key)
     {
-        auto f = bindingKey.find(key);
+        InputKey k;
+        if (!k.parseKey(key)) {
+            LogWarning << "Cannot unbind key. Unable to parse: " << key << endLog;
+            return;
+        }
+        auto f = bindingKey.find(k);
         if( f == bindingKey.end() ) return;
         bindingKey.erase(f);
     }
@@ -94,17 +109,21 @@ namespace Arya
         switch(event.type) {
             case SDL_KEYDOWN:
                 {
-                    if( bindingKeyDown )
-                        bindingKeyDown((int)event.key.keysym.sym);
-                    auto f = bindingKey.find(event.key.keysym.sym);
+                    //Do not count repeated keys, only for text-capture mode
+                    if(event.key.repeat) break;
+                    InputKey k(event.key.keysym);
+                    if( bindingKeyDown ) bindingKeyDown(k.keysym);
+                    auto f = bindingKey.find(k);
                     if( f != bindingKey.end() ) f->second(true);
                 }
                 break;
             case SDL_KEYUP:
                 {
-                    if( bindingKeyUp )
-                        bindingKeyUp((int)event.key.keysym.sym);
-                    auto f = bindingKey.find(event.key.keysym.sym);
+                    //Do not count repeated keys, only for text-capture mode
+                    if(event.key.repeat) break;
+                    InputKey k(event.key.keysym);
+                    if( bindingKeyUp ) bindingKeyUp(k.keysym);
+                    auto f = bindingKey.find(k);
                     if( f != bindingKey.end() ) f->second(false);
                 }
                 break;
@@ -134,6 +153,29 @@ namespace Arya
                 LogWarning << "Unkown event received in InputSystem" << endLog;
                 break;
         }
-
     }
+
+    InputSystem::InputKey::InputKey(const SDL_Keysym& sdlkey)
+    {
+        keysym = (int)sdlkey.sym;
+        mod = (int)sdlkey.mod;
+        //TODO: BITWISE AND TO MASK OUT UNUSED ONES
+        mod = 0;
+    }
+
+    bool InputSystem::InputKey::parseKey(const char* _key)
+    {
+        if (_key == 0 || _key[0] == 0) return false;
+        string key(_key);
+        transform(key.begin(), key.end(), key.begin(), ::tolower);
+
+        if (key.size() == 1) {
+            keysym = (int)key[0];
+            mod = 0;
+            return true;
+        }
+        //TODO: Parse "shift+a" and so on
+        return false;
+    }
+
 }
