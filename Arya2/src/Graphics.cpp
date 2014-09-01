@@ -68,44 +68,19 @@ namespace Arya
             GraphicsComponent* gr = ent->getGraphics();
             if (!gr) continue;
 
-            //TODO: Everything done below should be done in a general
-            // "RenderSpec" way
-            Model* model = gr->getModel();
-            if(!model) continue;
-
-            //TODO: Investigate the bounding box and also check onScreen.z ?
-            //mat4 totalMatrix = camera->getVPMatrix() * ent->getMoveMatrix();
-            //bool flag = false;
-            //for(int j = 0; j < 8; j++)
-            //{
-            //    vec4 onScreen(model->getBoundingBoxVertex(j), 1.0);
-            //    onScreen = totalMatrix * onScreen;
-            //    onScreen /= onScreen.w;
-            //    //LogDebug << "Onscreen = " << onScreen << endLog;
-            //    if(!(onScreen.x < -1.0 || onScreen.x > 1.0 || onScreen.y < -1.0 || onScreen.y > 1.0))
-            //    {
-            //        flag = true;
-            //        break;
-            //    }
-            //}
-            //if(flag == false) continue;
-
-            defaultShader->setUniform3fv("tintColor", vec3(0.5, 1.0, 0.5));
             defaultShader->setUniformMatrix4fv("mMatrix", ent->getMoveMatrix());
+            defaultShader->setUniform3fv("tintColor", vec3(0.5, 1.0, 0.5));
 
-            int frame = 0;
-            float interpolation = 0.0f;
-            AnimationState* animState = gr->getAnimationState();
-            if(animState)
-            {
-                frame = animState->getCurFrame();
-                interpolation = animState->getInterpolation();
+            RenderType type = gr->getRenderType();
+            switch(type) {
+                case TYPE_MODEL:
+                    renderModel(gr);
+                    break;
+                case TYPE_TERRAIN:
+                    break;
+                default:
+                    break;
             }
-            defaultShader->setUniform1f("interpolation", interpolation);
-
-            for(Mesh* mesh : model->getMeshes())
-                renderer->renderMesh(mesh, frame, defaultShader);
-
         }
         return;
     }
@@ -113,6 +88,42 @@ namespace Arya
     void Graphics::update(float elapsed)
     {
         camera->update(elapsed);
+    }
+
+    void Graphics::renderModel(GraphicsComponent* gr)
+    {
+        Model* model = gr->getModel();
+        if(!model) return;
+
+        //TODO: Investigate the bounding box and also check onScreen.z ?
+        //mat4 totalMatrix = camera->getVPMatrix() * ent->getMoveMatrix();
+        //bool flag = false;
+        //for(int j = 0; j < 8; j++)
+        //{
+        //    vec4 onScreen(model->getBoundingBoxVertex(j), 1.0);
+        //    onScreen = totalMatrix * onScreen;
+        //    onScreen /= onScreen.w;
+        //    //LogDebug << "Onscreen = " << onScreen << endLog;
+        //    if(!(onScreen.x < -1.0 || onScreen.x > 1.0 || onScreen.y < -1.0 || onScreen.y > 1.0))
+        //    {
+        //        flag = true;
+        //        break;
+        //    }
+        //}
+        //if(flag == false) continue;
+
+        int frame = 0;
+        float interpolation = 0.0f;
+        AnimationState* animState = gr->getAnimationState();
+        if(animState)
+        {
+            frame = animState->getCurFrame();
+            interpolation = animState->getInterpolation();
+        }
+        defaultShader->setUniform1f("interpolation", interpolation);
+
+        for(Mesh* mesh : model->getMeshes())
+            renderer->renderMesh(mesh, frame, defaultShader);
     }
 
 }

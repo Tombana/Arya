@@ -6,6 +6,7 @@ namespace Arya
     class Renderer;
     class Camera;
     class ShaderProgram;
+    class GraphicsComponent;
 
     class Graphics
     {
@@ -41,5 +42,7 @@ namespace Arya
             //TODO: This should be replaced
             //Shaders should be in renderspec
             ShaderProgram*  defaultShader;
+
+            void renderModel(GraphicsComponent* gr);
     };
 }

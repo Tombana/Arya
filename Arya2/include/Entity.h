@@ -9,18 +9,23 @@ using glm::mat4;
 
 namespace Arya
 {
-    class RenderSpec;
     class Model;
     class AnimationState;
+
+    enum RenderType
+    {
+        TYPE_NONE = 0,
+        TYPE_MODEL,
+        TYPE_TERRAIN
+    };
 
     class GraphicsComponent
     {
         public:
             GraphicsComponent() {}
             virtual ~GraphicsComponent() {}
-            virtual RenderSpec* getRenderSpec() { return 0; }
+            virtual RenderType getRenderType() const { return TYPE_NONE; }
 
-            //TODO: Move into renderspec
             virtual Model* getModel() const { return 0; }
             virtual AnimationState* getAnimationState() const { return 0; }
             virtual void setAnimation(const char* /* name */) { return; }
@@ -32,6 +37,7 @@ namespace Arya
         public:
             ModelGraphicsComponent();
             ~ModelGraphicsComponent();
+            RenderType getRenderType() const override { return TYPE_MODEL; }
 
             Model* getModel() const override { return model; }
             AnimationState* getAnimationState() const override { return animState; }
