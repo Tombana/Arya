@@ -19,18 +19,10 @@ bool Game::init()
         return false;
     }
 
-    //root->getInputSystem()->bind(INPUT_KEYDOWN, [](int key)
-    //        {
-    //            LogInfo << "Game got keydown: " << key << endLog;
-    //        });
-
-    root->getInputSystem()->bind('q',
-            [this](bool down) {
-                if(!down) root->stopGameLoop();
-            });
-
-    root->getInputSystem()->bind('a', [this](bool down) { pressedLeft = down; });
-    root->getInputSystem()->bind('d', [this](bool down) { pressedRight = down; });
+    Arya::InputSystem* input = root->getInputSystem();
+    input->bind('q', [this](bool down) { if(!down) root->stopGameLoop(); });
+    input->bind('a', [this](bool down) { pressedLeft = down; });
+    input->bind('d', [this](bool down) { pressedRight = down; });
 
     Arya::Model* model = root->getModelManager()->getModel("ogros.aryamodel");
     if(model) model->getBoundingBoxVertex(2);
