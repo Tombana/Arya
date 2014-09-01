@@ -116,7 +116,7 @@ namespace Arya
             return false;
         }
 
-        if( !graphics->init() ) return false;
+        if( !graphics->init(windowWidth, windowHeight) ) return false;
         //if( !inputSystem->init() ) return false;
         //if( !interface->init() ) return false;
         //if( !world->init() ) return false;
@@ -219,10 +219,10 @@ namespace Arya
     {
 		windowWidth = newWidth;
 		windowHeight = newHeight;
-        //TODO:
-        //graphics->getCamera()
-        //cam->setProjectionMatrix(45.0f windowWidth/((float)windowHeight), 0.1f, 2000.0f);
-        //
+
+        graphics->resize(windowWidth, windowHeight);
+
+        //TODO
         //interface->recalculatePositions()
     }
 }

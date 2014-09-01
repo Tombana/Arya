@@ -5,8 +5,7 @@ namespace Arya
     class World;
     class Renderer;
     class Camera;
-    class MaterialSystem;
-    class TextureSystem;
+    class ShaderProgram;
 
     class Graphics
     {
@@ -14,12 +13,19 @@ namespace Arya
             Graphics();
             ~Graphics();
 
-            bool init();
+            //! Initialize GLEW, a default shader and
+            //! set the camera projection matrix
+            bool init(int width, int height);
+
+            //! Recompute the camera projection matrix
+            void resize(int width, int height);
 
             //! Clear the screen
             void clear(int width, int height);
 
-            //TODO: World* or some list of GraphicsComponent as argument
+            //TODO: Should this be world* or some list of RenderSpec's
+            //The last case seems appropriate so that Graphics does not
+            //know about World, only a list of renderable things
             void render(World* world);
 
             //! Update camera
@@ -27,13 +33,13 @@ namespace Arya
 
             Renderer*       getRenderer() const { return renderer; }
             Camera*         getCamera() const { return camera; }
-            MaterialSystem* getMaterialSystem() const { return materialSystem; }
-            TextureSystem*  getTextureSystem() const { return textureSystem; }
 
         private:
             Renderer*       renderer;
             Camera*         camera;
-            MaterialSystem* materialSystem;
-            TextureSystem*  textureSystem;
+
+            //TODO: This should be replaced
+            //Shaders should be in renderspec
+            ShaderProgram*  defaultShader;
     };
 }

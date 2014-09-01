@@ -9,6 +9,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <glm/glm.hpp>
+
+using glm::vec3;
+using glm::vec4;
 
 #define LogError    (Arya::logger << Arya::L_ERROR)
 #define LogWarning  (Arya::logger << Arya::L_WARNING)
@@ -104,6 +108,18 @@ namespace Arya
                     break;
             };
         }
+        return logger;
+    }
+
+    inline Logger& operator<<(Logger& logger, const vec3& v)
+    {
+        logger << '(' << v.x << ',' << v.y << ',' << v.z << ')';
+        return logger;
+    }
+
+    inline Logger& operator<<(Logger& logger, const vec4& v)
+    {
+        logger << '(' << v.x << ',' << v.y << ',' << v.z << ',' << v.w << ')';
         return logger;
     }
 

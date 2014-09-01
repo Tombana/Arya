@@ -21,6 +21,7 @@ namespace Arya
 
     //TODO: Move this out of here
     class Model;
+    class AnimationState;
 
     class ModelGraphicsComponent : public GraphicsComponent
     {
@@ -29,6 +30,17 @@ namespace Arya
             ~ModelGraphicsComponent() {}
 
             Model* model;
+            AnimationState* animState;
+
+            //setModel also recreates a new AnimationState object
+            //void setModel(Model* model); //see oldsrc/Objects.cpp for correct implementation
+            //Model* getModel() const { return model; }
+
+            //void setAnimation(const char* name);
+            //void setAnimationTime(float time); //for the currently set animation
+
+            AnimationState* getAnimationState() const { return animState; }
+            void updateAnimation(float elapsedTime);
     };
 
     class Entity

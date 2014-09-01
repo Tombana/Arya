@@ -11,4 +11,9 @@ class Game
 
     private:
         Arya::Root* root;
+        
+        bool pressedLeft;
+        bool pressedRight;
+
+        void update(float dt);
 };

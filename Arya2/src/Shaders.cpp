@@ -41,21 +41,25 @@ namespace Arya
         }
         else 
         {
-            GLchar** gl_sources = new GLchar*[sources.size()];
-            for(unsigned int i = 0; i < sources.size(); ++i)
-                gl_sources[i] = sources[i]->getData();
-
             switch(type)
             {
                 case VERTEX:    handle = glCreateShader(GL_VERTEX_SHADER); break;
                 case FRAGMENT:  handle = glCreateShader(GL_FRAGMENT_SHADER); break;
                 case GEOMETRY:  handle = glCreateShader(GL_GEOMETRY_SHADER); break;
-                default: LogError << "Error compiling shader: Invalid type." << endLog; break;
+                default: LogError << "Error compiling shader: Invalid type." << endLog; return false;
             }
 
-            const GLchar* pFile = sources[0]->getData();
-            const GLint pSize  = sources[0]->getSize();
-            glShaderSource(handle, 1, &pFile, &pSize);
+            GLchar** gl_sources = new GLchar*[sources.size()];
+            GLint* lengths = new GLint[sources.size()];
+            for(unsigned int i = 0; i < sources.size(); ++i) {
+                gl_sources[i] = sources[i]->getData();
+                lengths[i] = sources[i]->getSize();
+            }
+
+            glShaderSource(handle, sources.size(), gl_sources, lengths);
+
+            delete[] gl_sources;
+            delete[] lengths;
 
             glCompileShader(handle);
 
