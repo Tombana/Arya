@@ -19,9 +19,8 @@ void main()
 	fragColor = texture(tex, texCoo);
 	if(fragColor.xyz == vec3(1.0, 0.0, 1.0))
         fragColor.xyz = tintColor;
-	//fragColor.xyz=vec3(1.0,0.5,1.0);
-	fragColor.xyz *= max(lightFraction*parameters.w, parameters.z);
-	fragColor.xyz += parameters.x*vec3(pow(spec,parameters.y));
+	//fragColor.xyz *= max(lightFraction*parameters.w, parameters.z);
+	//fragColor.xyz += parameters.x*vec3(pow(spec,parameters.y));
 	//fragColor.xyz += vec3(0.10);
 	fragColor.a=1.0;
 }

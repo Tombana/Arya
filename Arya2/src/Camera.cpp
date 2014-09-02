@@ -33,10 +33,10 @@ namespace Arya
 
     vec3 Camera::getEyePosition()
     {
-        updateViewProjectionMatrix();
-        vec3 relative(0, 0, camDist);
+        //updateViewProjectionMatrix();
+        vec3 relative(0, -camDist, 0);
         relative = glm::rotateX(relative, pitch);
-        relative = glm::rotateY(relative, yaw);
+        relative = glm::rotateZ(relative, yaw);
         return getPosition() + relative;
     }
 
@@ -147,9 +147,15 @@ namespace Arya
         if(!updateMatrix) return;
         updateMatrix = false;
         viewMatrix = mat4(1.0f);
-        viewMatrix = glm::translate( viewMatrix, vec3(0, 0, -camDist) );
+        //World has z-axis up, but OpenGL expects y-axis up
+        //The following rotation should preserve handedness
+        //(0,0,1) --> (0,1,0)          (0,1,0) --> (0,0,-1)
+        viewMatrix[1][1] = viewMatrix[2][2] = 0;
+        viewMatrix[2][1] =  1.0f;
+        viewMatrix[1][2] = -1.0f;
+        viewMatrix = glm::translate( viewMatrix, vec3(0, +camDist, 0) );
         viewMatrix = glm::rotate( viewMatrix, -pitch, vec3(1.0, 0.0, 0.0) );
-        viewMatrix = glm::rotate( viewMatrix, -yaw, vec3(0.0, 1.0, 0.0) );
+        viewMatrix = glm::rotate( viewMatrix,   -yaw, vec3(0.0, 0.0, 1.0) ); //z-axis
         viewMatrix = glm::translate( viewMatrix, -position );
         vpMatrix = projectionMatrix * viewMatrix;
         return;
@@ -159,13 +165,14 @@ namespace Arya
     {
         if(!updateInverse) return;
         updateInverse = false;
-
         inverseViewMatrix = mat4(1.0f);
         inverseViewMatrix = glm::translate( inverseViewMatrix, position );
-        inverseViewMatrix = glm::rotate( inverseViewMatrix, yaw, vec3(0.0, 1.0, 0.0) );
+        inverseViewMatrix = glm::rotate( inverseViewMatrix,   yaw, vec3(0.0, 0.0, 1.0) );
         inverseViewMatrix = glm::rotate( inverseViewMatrix, pitch, vec3(1.0, 0.0, 0.0) );
-        inverseViewMatrix = glm::translate( inverseViewMatrix, vec3(0, 0, camDist) );
-        inverseVPMatrix = inverseViewMatrix * inverseProjectionMatrix;
+        inverseViewMatrix = glm::translate( inverseViewMatrix, vec3(0, -camDist, 0) );
+        mat4 axes(1.0f);
+        axes[1][1] = axes[2][2] = 0; axes[2][1] = -1.0f; axes[1][2] = +1.0f;
+        inverseVPMatrix = inverseViewMatrix * axes * inverseProjectionMatrix;
         return;
     }
 
