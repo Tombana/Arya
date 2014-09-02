@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <SDL2/SDL.h>
 using std::string;
-using std::transform;
 
 namespace Arya
 {
@@ -158,23 +157,52 @@ namespace Arya
     InputSystem::InputKey::InputKey(const SDL_Keysym& sdlkey)
     {
         keysym = (int)sdlkey.sym;
-        mod = (int)sdlkey.mod;
-        //TODO: BITWISE AND TO MASK OUT UNUSED ONES
-        mod = 0;
+        mod = (int)sdlkey.mod & ~(KMOD_NUM | KMOD_CAPS);
     }
 
     bool InputSystem::InputKey::parseKey(const char* _key)
     {
         if (_key == 0 || _key[0] == 0) return false;
         string key(_key);
-        transform(key.begin(), key.end(), key.begin(), ::tolower);
-
+        //remove spaces and transform to lowercase
+        key.erase(std::remove_if(key.begin(), key.end(), isspace), key.end());
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        keysym = 0;
+        mod = 0;
         if (key.size() == 1) {
             keysym = (int)key[0];
-            mod = 0;
             return true;
+        } else {
+            //If the string contains any of the substrings shown below
+            //then remove it from the string. At the end there
+            //should be only one character left which will be the letter
+            string::size_type pos;
+            pos = key.find("shift+");
+            if (pos != string::npos) {
+                mod |= KMOD_SHIFT;
+                key.erase(pos,6);
+            }
+            pos = key.find("ctrl+");
+            if (pos != string::npos) {
+                mod |= KMOD_CTRL;
+                key.erase(pos,5);
+            }
+            pos = key.find("s+");
+            if( pos != string::npos) {
+                mod |= KMOD_SHIFT;
+                key.erase(pos,2);
+            }
+            pos = key.find("c+");
+            if (pos != string::npos) {
+                mod |= KMOD_CTRL;
+                key.erase(pos,2);
+            }
+            if (key.size() == 1) {
+                keysym = (int)key[0];
+                return true;
+            }
         }
-        //TODO: Parse "shift+a" and so on
+        LogWarning << "Could not parse keybinding: " << _key << endLog;
         return false;
     }
 
