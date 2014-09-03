@@ -26,6 +26,7 @@ bool Game::init()
     input->bind("A", [this](bool down) { pressedLeft = down; });
     input->bind("D", [this](bool down) { pressedRight = down; });
 
+    input->bind("ctrl+shift+f", [](bool down) { if(down) LogDebug << "ctrl+shift+f" << endLog; });
 
     return true;
 }

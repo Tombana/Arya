@@ -157,7 +157,13 @@ namespace Arya
     InputSystem::InputKey::InputKey(const SDL_Keysym& sdlkey)
     {
         keysym = (int)sdlkey.sym;
+        //remove numlock and capslock
         mod = (int)sdlkey.mod & ~(KMOD_NUM | KMOD_CAPS);
+        //if ONE of the shift bits (left or right) is set, then set both
+        //same for control and alt
+        if (mod & KMOD_SHIFT) mod |= KMOD_SHIFT;
+        if (mod & KMOD_CTRL) mod |= KMOD_CTRL;
+        if (mod & KMOD_ALT) mod |= KMOD_ALT;
     }
 
     bool InputSystem::InputKey::parseKey(const char* _key)
@@ -187,14 +193,24 @@ namespace Arya
                 mod |= KMOD_CTRL;
                 key.erase(pos,5);
             }
+            pos = key.find("alt+");
+            if (pos != string::npos) {
+                mod |= KMOD_ALT;
+                key.erase(pos,4);
+            }
             pos = key.find("s+");
-            if( pos != string::npos) {
+            if (pos != string::npos) {
                 mod |= KMOD_SHIFT;
                 key.erase(pos,2);
             }
             pos = key.find("c+");
             if (pos != string::npos) {
                 mod |= KMOD_CTRL;
+                key.erase(pos,2);
+            }
+            pos = key.find("a+");
+            if (pos != string::npos) {
+                mod |= KMOD_ALT;
                 key.erase(pos,2);
             }
             if (key.size() == 1) {
