@@ -20,9 +20,10 @@ namespace Arya
         filestream.close();
     }
 
-    bool Logger::setOutputFile(const char* filename)
+    bool Logger::setOutputFile(const char* filename, bool append)
     {
-        filestream.open(filename);
+        using std::ofstream;
+        filestream.open(filename, (append ? ofstream::out | ofstream::app : ofstream::out));
         return filestream.is_open();
     }
 

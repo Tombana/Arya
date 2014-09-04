@@ -37,7 +37,7 @@ namespace Arya
             Logger();
             ~Logger();
 
-            bool setOutputFile(const char* filename);
+            bool setOutputFile(const char* filename, bool append = true);
             void closeOutputFile();
 
             //! combine the LOGLEVEL flags to specify

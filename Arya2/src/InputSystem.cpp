@@ -53,6 +53,7 @@ namespace Arya
             LogWarning << "Unable to bind key. Could not parse: " << key << endLog;
             return;
         }
+        if (bindingKey.find(k) != bindingKey.end()) LogInfo << "Rebinding key '" << key << "' (old binding removed)" << endLog;
         bindingKey[k] = f;
         return;
     }
@@ -91,7 +92,10 @@ namespace Arya
             return;
         }
         auto f = bindingKey.find(k);
-        if( f == bindingKey.end() ) return;
+        if (f == bindingKey.end()) {
+            LogInfo << "Trying to unbind '" << key << "' but the binding did not exist." << endLog;
+            return;
+        }
         bindingKey.erase(f);
     }
 
