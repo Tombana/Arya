@@ -126,25 +126,10 @@ void GameSessionInput::mouseMoved(int x, int y, int dx, int dy)
     (void)dx; (void)dy;
     int padding = 10;
 
-    if(x < padding)
-        mouseLeft = true;
-    else
-        mouseLeft = false;
-
-    if(y < padding)
-        mouseBot = true;
-    else
-        mouseBot = false;
-
-    if(x > Arya::Locator::getRoot().getWindowWidth() - padding)
-        mouseRight = true;
-    else
-        mouseRight = false;
-
-    if(y > Arya::Locator::getRoot().getWindowHeight() - padding)
-        mouseTop = true;
-    else
-        mouseTop = false;
+    mouseLeft = (x < padding);
+    mouseTop = (y < padding);
+    mouseRight = (x > Arya::Locator::getRoot().getWindowWidth() - padding);
+    mouseBot = (y > Arya::Locator::getRoot().getWindowHeight() - padding);
 
     computeForce();
     return;
