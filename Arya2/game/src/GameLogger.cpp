@@ -2,6 +2,11 @@
 #include <ctime>
 #include <iostream>
 
+//Color output into terminals
+#ifdef __linux__
+#include <unistd.h>
+#endif
+
 //The global object
 GameLogger gameLogger;
 
@@ -40,7 +45,31 @@ GameLogger& endLog(GameLogger& logger)
 void GameLogger::flush()
 {
     if( stdoutLogLevel & currentLogLevel ){
-        std::cout << streambuff.str() << std::endl;
+        bool colorOutput = false;
+#ifdef __linux
+        //check if standard output is actually a terminal and not forwarded to a file
+        if (isatty(fileno(stdout))) colorOutput = true;
+#endif
+        if (colorOutput) {
+            switch(currentLogLevel) {
+                case L_CRITICALERROR:
+                case L_ERROR:
+                    std::cout << "\x1b[31m";
+                    break;
+                case L_WARNING:
+                    std::cout << "\x1b[33m";
+                    break;
+                case L_INFO:
+                    std::cout << "\x1b[32m";
+                    break;
+                default:
+                    break;
+            }
+            std::cout << streambuff.str();
+            std::cout << "\x1b[0m" << std::endl;
+        } else {
+            std::cout << streambuff.str() << std::endl;
+        }
     }
     if( fileLogLevel & currentLogLevel ){
         char buf[80];
