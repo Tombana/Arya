@@ -5,6 +5,7 @@
 #include <vector>
 using std::vector;
 
+class GameSessionInput;
 class Faction;
 struct CellList;
 
@@ -28,11 +29,13 @@ class GameSessionClient : public GameSession
         //! TODO: What if the player could control multiple factions
         Faction* getLocalFaction() const { return localFaction; } ;
 
-        //! Returns a list of all factions
-        const vector<Faction*>& getFactions() const { return factions; }
+        //! Update all game engine related things like camera movement
+        void update(float elapsedTime); //in seconds
 
         //! Update all units and so on
-        void update(int elapsedTime); //in ms
+        //! This timing is the one that should be properly
+        //! synchronized with the server
+        void updateGameLogic(int elapsedTime); //in ms
 
         //TODO
         //void handleEvent(Packet& packet);
@@ -40,7 +43,6 @@ class GameSessionClient : public GameSession
      private:
         GameSessionInput* input;
         Faction* localFaction;
-        vector<Faction*> factions;
         vector<int> clients;
 
         CellList* unitCells;

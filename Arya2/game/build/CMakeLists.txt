@@ -12,6 +12,7 @@ SET(
     "../src/GameLogger.cpp"
     "../src/GameSession.cpp"
     "../src/GameSessionClient.cpp"
+    "../src/GameSessionInput.cpp"
     "../src/main.cpp"
     "../src/Unit.cpp"
     "../src/UnitInfo.cpp"

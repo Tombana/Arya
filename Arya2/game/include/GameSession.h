@@ -47,6 +47,8 @@ class GameSession
         int gameTimer;
         Map* map;
 
+        const std::map<int,Unit*>& getUnitMap() const { return unitMap; }
+        const std::map<int,Faction*>& getFactionMap() const { return factionMap; }
     private:
         friend class Unit;
         friend class Faction;

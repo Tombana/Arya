@@ -2,6 +2,7 @@
 #include "GameLogger.h"
 #include "Faction.h"
 #include "Unit.h"
+//#include "Map.h"
 
 GameSession::GameSession()
 {
@@ -19,6 +20,8 @@ GameSession::~GameSession()
     //After deleting the factions, there should be no more units left
     if(!unitMap.empty())
         GameLogError << "List of units is not empty at deconstruction of GameSession. Possible memory leak" << endLog;
+
+    //if (map) delete map;
 }
 
 Unit* GameSession::createUnit(int id, int type)

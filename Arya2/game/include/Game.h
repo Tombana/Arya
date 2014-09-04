@@ -1,5 +1,7 @@
 #include "Arya.h"
 
+class GameSessionClient;
+
 class Game
 {
     public:
@@ -12,11 +14,10 @@ class Game
     private:
         Arya::Root* root;
         
-        bool pressedLeft;
-        bool pressedRight;
-
         void update(float dt);
 
         float totalTime;
         bool entityCreated;
+
+        GameSessionClient* session;
 };

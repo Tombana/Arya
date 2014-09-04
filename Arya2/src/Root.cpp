@@ -28,6 +28,8 @@ namespace Arya
     {
         sdlValues = new SDLValues;
 
+        Locator::provide(this);
+
         fileSystem = new FileSystem();
         Locator::provide(fileSystem);
 
@@ -38,6 +40,7 @@ namespace Arya
         modelManager = new ModelManager;
         materialManager = new MaterialManager;
         textureManager = new TextureManager;
+        Locator::provide(inputSystem);
         Locator::provide(modelManager);
         Locator::provide(materialManager);
         Locator::provide(textureManager);
@@ -63,11 +66,14 @@ namespace Arya
         materialManager = 0;
         modelManager = 0;
         fileSystem = 0;
+        inputSystem = 0;
         //Unset the Locator pointers
         Locator::provide(textureManager);
         Locator::provide(materialManager);
         Locator::provide(modelManager);
+        Locator::provide(inputSystem);
         Locator::provide(fileSystem);
+        Locator::provide((Root*)0);
 
         if( sdlValues->context ) SDL_GL_DeleteContext(sdlValues->context);
         if( sdlValues->window ) SDL_DestroyWindow(sdlValues->window);

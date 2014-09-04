@@ -12,11 +12,9 @@ Faction::Faction(int _id, GameSession* _session) : session(_session), id(_id)
 
 Faction::~Faction()
 {
-    for(auto it = units.begin(); it != units.end(); )
-    {
-        delete *it;
-        it = units.erase(it);
-    }
+    for(auto unit : units)
+        delete unit;
+    units.clear();
     session->destroyFaction(id);
 }
 

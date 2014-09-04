@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include "UnitInfo.h"
 #include "GameSession.h"
+#include "Cells.h"
 #include <cmath>
 
 #ifdef _WIN32
@@ -77,25 +78,23 @@ void Unit::setPosition(const vec3& pos)
 {
     position = pos;
     if(entity) entity->setPosition(pos);
+    if(currentCell) setCell(currentCell->cellList->cellForPosition(getPosition2()));
     //if(selectionDecal) selectionDecal->setPos(getPosition2());
-    //if(currentCell) setCell(currentCell->cellList->cellForPosition(getPosition2()));
 }
 
 void Unit::setCell(Cell* newCell)
 {
     if(currentCell != newCell)
     {
-        //TODO
-        //if(currentCell) currentCell->remove(id);
-        //currentCell = newCell;
-        //if(currentCell) currentCell->add(id);
+        if(currentCell) currentCell->remove(id);
+        currentCell = newCell;
+        if(currentCell) currentCell->add(id);
     }
 }
 
 void Unit::setCellFromList(CellList* cl)
 {
-    (void)cl;
-    //setCell(cl->cellForPosition(getPosition2()));
+    setCell(cl->cellForPosition(getPosition2()));
 }
 
 void Unit::update(int gameTime)
@@ -424,6 +423,66 @@ void Unit::setTintColor(vec3 tC)
     //if(entity) entity->setTintColor(tC);
     //if(selectionDecal) selectionDecal->color = tC;
     //healthBar->fillColor = vec4(tintColor, 1.0);
+}
+
+void Unit::checkForEnemies()
+{
+#ifndef SERVERONLY
+    if(unitState != UNIT_IDLE)
+        return;
+
+    //TODO: Instead of trying to stop the spam with a timer
+    //we should actually check if this specific request has been
+    //answered or not
+    if(timeSinceLastAttackRequest < 0.3f) return;
+
+    if(!currentCell) return;
+
+    CellList* list = currentCell->cellList;
+    if(!list) return;
+
+    int curx = currentCell->cellx;
+    int cury = currentCell->celly;
+
+    Cell* c;
+    float closestDistance = unitInfo->viewRadius;
+    int closestId = -1;
+
+    float d;
+    // loop through neighbours
+    for(int dx = -1; dx <= 1; ++dx)
+        for(int dy = -1; dy <= 1; ++dy)
+        {
+            if(curx + dx >= list->gridSize || curx + dx < 0) continue;
+            if(cury + dy >= list->gridSize || cury + dy < 0) continue;
+            c = list->cellForIndex(curx + dx, cury + dy);
+            // loop through
+            for(unsigned i = 0; i < c->cellPoints.size(); ++i)
+            {
+                Unit* unit = session->getUnitById(c->cellPoints[i]);
+                if(!unit) continue;
+                if(unit->factionId == factionId) continue;
+                d = glm::distance(position, unit->getPosition());
+
+                if(d < closestDistance)
+                {
+                    closestDistance = d;
+                    closestId = c->cellPoints[i];
+                }
+            }
+        }
+
+    if(closestId >= 0)
+    {
+        timeSinceLastAttackRequest = 0;
+        //TODO: Instead of a single event for each unit we can combine
+        //all attacks into a single event (currently there is a '1' as count)
+//        Event& ev = Game::shared().getEventManager()->createEvent(EVENT_ATTACK_MOVE_UNIT_REQUEST);
+//        ev << 1;
+//        ev << id << closestId;
+//        ev.send();
+    }
+#endif
 }
 
 //void Unit::serialize(Packet& pk)

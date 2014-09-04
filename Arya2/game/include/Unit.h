@@ -70,7 +70,7 @@ class Unit
         void setCellFromList(CellList* cl);
 
         //! Get the current cell that the unit is in
-        //Cell* getCell() const { return currentCell; }
+        Cell* getCell() const { return currentCell; }
 
         //! Call this only for local units:
         //! It checks for enemies and if they are close it

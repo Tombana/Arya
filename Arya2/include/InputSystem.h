@@ -13,8 +13,7 @@ namespace Arya
     {
         INPUT_KEYDOWN = 1,
         INPUT_KEYUP,
-        INPUT_MOUSEBUTTONDOWN,
-        INPUT_MOUSEBUTTONUP,
+        INPUT_MOUSEBUTTON,
         INPUT_MOUSEMOVEMENT,
         INPUT_MOUSEWHEEL
     };
@@ -36,13 +35,13 @@ namespace Arya
             //! Only one binding can be used for each event
             //! Different events require different callback prototypes
             //! KEYDOWN and KEYUP           void(int key)
-            //! MOUSEDOWN and MOUSEUP       void(MOUSEBUTTON btn, int x, int y)
-            //! MOUSEMOVEMENT               void(int x, int y, int relativex, int relativey)
             //! MOUSEWHEEL                  void(int delta)
+            //! MOUSEBUTTON                 void(MOUSEBUTTON btn, bool down, int x, int y)
+            //! MOUSEMOVEMENT               void(int x, int y, int relativex, int relativey)
             //! key                         void(bool down)
             void bind(INPUTEVENT event, function<void(int)> f);
-            void bind(INPUTEVENT event, function<void(MOUSEBUTTON,int,int)> f);
-            void bind(INPUTEVENT event, function<void(int,int,int,int)> f);
+            void bindMouseButton(function<void(MOUSEBUTTON,bool,int,int)> f);
+            void bindMouseMove(function<void(int,int,int,int)> f);
             void bind(const char* key, function<void(bool)> f);
 
             //! Unbind an event
@@ -56,8 +55,7 @@ namespace Arya
         private:
             function<void(int)> bindingKeyDown;
             function<void(int)> bindingKeyUp;
-            function<void(MOUSEBUTTON,int,int)> bindingMouseDown;
-            function<void(MOUSEBUTTON,int,int)> bindingMouseUp;
+            function<void(MOUSEBUTTON,bool,int,int)> bindingMouseBtn;
             function<void(int,int,int,int)> bindingMouseMovement;
             function<void(int)> bindingMouseWheel;
 

@@ -27,23 +27,14 @@ namespace Arya
             LogWarning << "Trying to bind event with invalid function signature or invalid event type" << endLog;
     }
 
-    void InputSystem::bind(INPUTEVENT event, function<void(MOUSEBUTTON,int,int)> f)
+    void InputSystem::bindMouseButton(function<void(MOUSEBUTTON,bool,int,int)> f)
     {
-        if( event == INPUT_MOUSEBUTTONDOWN )
-            bindingMouseDown = f;
-        else if( event == INPUT_MOUSEBUTTONUP )
-            bindingMouseUp = f;
-        else
-            LogWarning << "Trying to bind event with invalid function signature or invalid event type" << endLog;
+        bindingMouseBtn = f;
     }
 
-
-    void InputSystem::bind(INPUTEVENT event, function<void(int,int,int,int)> f)
+    void InputSystem::bindMouseMove(function<void(int,int,int,int)> f)
     {
-        if( event == INPUT_MOUSEMOVEMENT )
-            bindingMouseMovement = f;
-        else
-            LogWarning << "Trying to bind event with invalid function signature or invalid event type" << endLog;
+        bindingMouseMovement = f;
     }
 
     void InputSystem::bind(const char* key, function<void(bool)> f)
@@ -67,11 +58,8 @@ namespace Arya
             case INPUT_KEYUP:
                 bindingKeyUp = nullptr;
                 break;
-            case INPUT_MOUSEBUTTONDOWN:
-                bindingMouseDown = nullptr;
-                break;
-            case INPUT_MOUSEBUTTONUP:
-                bindingMouseUp = nullptr;
+            case INPUT_MOUSEBUTTON:
+                bindingMouseBtn = nullptr;
                 break;
             case INPUT_MOUSEMOVEMENT:
                 bindingMouseMovement = nullptr;
@@ -131,14 +119,14 @@ namespace Arya
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                if( bindingMouseDown ) {
-                    bindingMouseDown(translateButton(event.button.button),
+                if( bindingMouseBtn ) {
+                    bindingMouseBtn(translateButton(event.button.button), true,
                             event.button.x, event.button.y);
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
-                if( bindingMouseUp ) {
-                    bindingMouseUp(translateButton(event.button.button),
+                if( bindingMouseBtn ) {
+                    bindingMouseBtn(translateButton(event.button.button), false,
                             event.button.x, event.button.y);
                 }
                 break;
