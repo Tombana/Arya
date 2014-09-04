@@ -28,8 +28,18 @@ namespace Arya
 
             virtual Model* getModel() const { return 0; }
             virtual AnimationState* getAnimationState() const { return 0; }
+
+            //! Set the animation
             virtual void setAnimation(const char* /* name */) { return; }
+
+            //! Call this every frame to let the animation run
             virtual void updateAnimation(float /* elapsedTime */) { return; }
+
+            //! Set the animation time for the currently set animation
+            //! Meaning it will speedup or slowdown the animation so that
+            //! it finishes in the specified time
+            //! Usefull for making attack animations depend on attack speed
+            virtual void setAnimationTime(float /* time */) { return; }
     };
 
     class ModelGraphicsComponent : public GraphicsComponent
@@ -43,14 +53,13 @@ namespace Arya
             AnimationState* getAnimationState() const override { return animState; }
             void setAnimation(const char* name) override;
             void updateAnimation(float elapsedTime) override;
+            void setAnimationTime(float time) override;
 
             //! setModel releases the old model and animationstate.
             //! If the new model is nonzero,
             //! it creates a new AnimationState object
             void setModel(Model* model);
 
-            //! Set the animation time for the currently set animation
-            void setAnimationTime(float time);
         private:
             Model* model;
             AnimationState* animState;

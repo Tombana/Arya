@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameLogger.h"
 using namespace Arya;
 
 Game::Game()
@@ -26,7 +27,7 @@ bool Game::init()
     input->bind("A", [this](bool down) { pressedLeft = down; });
     input->bind("D", [this](bool down) { pressedRight = down; });
 
-    input->bind("ctrl+shift+f", [](bool down) { if(down) LogDebug << "ctrl+shift+f" << endLog; });
+    input->bind("ctrl+shift+f", [](bool down) { if(down) GameLogDebug << "ctrl+shift+f" << endLog; });
 
     return true;
 }

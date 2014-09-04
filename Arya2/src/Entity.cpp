@@ -66,6 +66,11 @@ namespace Arya
         if (animState) animState->updateAnimation(elapsedTime);
     }
 
+    void ModelGraphicsComponent::setAnimationTime(float time)
+    {
+        if (animState) animState->setAnimationTime(time);
+    }
+
     void ModelGraphicsComponent::setModel(Model* newModel)
     {
         if (model) model->release();

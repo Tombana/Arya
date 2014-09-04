@@ -1,4 +1,3 @@
-#include "common/Logger.h"
 #include "Camera.h"
 #include "Entity.h"
 #include "EntitySystem.h"
@@ -8,3 +7,7 @@
 #include "Models.h"
 #include "Root.h"
 #include "World.h"
+
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
