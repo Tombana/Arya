@@ -1,4 +1,5 @@
 #include "common/Logger.h"
+#include <ctime>
 #include <iostream>
 
 namespace Arya
@@ -44,8 +45,10 @@ namespace Arya
 			std::cout << streambuff.str() << std::endl;
 		}
 		if( fileLogLevel & currentLogLevel ){
-			//TODO: When doing file output, also prepend timestamp
-            filestream << streambuff.str() << std::endl;
+            char buf[80];
+            std::time_t now = std::time(NULL);
+            strftime(buf, sizeof(buf), "[%Y-%m-%d %X] ", std::localtime(&now));
+            filestream << buf << streambuff.str() << std::endl;
 		}
         if(callbackFunc)
             if(callbackLogLevel & currentLogLevel)
