@@ -15,6 +15,10 @@ Game::~Game()
     if (session) delete session;
 }
 
+//Temporarily
+const int animCount = 19;
+const char* animNames[animCount] = {"stand", "run", "attack", "pain_a", "pain_b", "pain_c", "jump", "flip", "salute", "fallback", "wave", "point", "crouch_stand", "crouch_walk", "crouch_death", "death_fallback", "death_fallforward", "death_fallbackslow", "boom"};
+
 bool Game::init()
 {
     root = new Arya::Root();
@@ -55,13 +59,16 @@ void Game::update(float dt)
 
         Arya::Model* model = root->getModelManager()->getModel("ogros.aryamodel");
 
+        int counter = 0;
         for(int x = 0; x < 10; ++x) {
             for(int y = 0; y < 10; ++y) {
                 Entity* ent = root->getWorld()->getEntitySystem()->createEntity();
                 ent->setPosition(vec3(30.0f*x,30.0f*y,0));
                 ent->setModel(model);
-                ent->getGraphics()->setAnimation("run");
+                ent->getGraphics()->setAnimation( animNames[counter%animCount] );
+                ++counter;
             }
         }
     }
 }
+
