@@ -7,8 +7,27 @@ using std::string;
 
 namespace Arya
 {
+    map <string,SDL_Keycode> keyMap;
+
     InputSystem::InputSystem()
     {
+        if(keyMap.empty()) {
+            //Note that a-z and 0-9 are taken care of separately
+            //All strings must be lowercase!
+            keyMap["space"] = SDLK_SPACE;
+            keyMap["enter"] = SDLK_RETURN;
+            keyMap["return"] = SDLK_RETURN;
+            keyMap["escape"] = SDLK_ESCAPE;
+            keyMap["esc"] = SDLK_ESCAPE;
+            keyMap["plus"] = SDLK_PLUS;
+            keyMap["+"] = SDLK_PLUS;
+            keyMap["minus"] = SDLK_MINUS;
+            keyMap["-"] = SDLK_MINUS;
+            keyMap["slash"] = SDLK_SLASH;
+            keyMap["/"] = SDLK_SLASH;
+            keyMap["period"] = SDLK_PERIOD;
+            keyMap["."] = SDLK_PERIOD;
+        }
     }
 
     InputSystem::~InputSystem()
@@ -167,51 +186,55 @@ namespace Arya
         std::transform(key.begin(), key.end(), key.begin(), ::tolower);
         keysym = 0;
         mod = 0;
-        if (key.size() == 1) {
+
+        //If the string contains any of the substrings shown below
+        //then remove it from the string. At the end there
+        //should be only one character left which will be the letter
+        string::size_type pos;
+        pos = key.find("shift+");
+        if (pos != string::npos) {
+            mod |= KMOD_SHIFT;
+            key.erase(pos,6);
+        }
+        pos = key.find("ctrl+");
+        if (pos != string::npos) {
+            mod |= KMOD_CTRL;
+            key.erase(pos,5);
+        }
+        pos = key.find("alt+");
+        if (pos != string::npos) {
+            mod |= KMOD_ALT;
+            key.erase(pos,4);
+        }
+        pos = key.find("s+");
+        if (pos != string::npos) {
+            mod |= KMOD_SHIFT;
+            key.erase(pos,2);
+        }
+        pos = key.find("c+");
+        if (pos != string::npos) {
+            mod |= KMOD_CTRL;
+            key.erase(pos,2);
+        }
+        pos = key.find("a+");
+        if (pos != string::npos) {
+            mod |= KMOD_ALT;
+            key.erase(pos,2);
+        }
+        //Now parse the remaining part: the actual key
+        if (key.size() == 1 && (
+                (key[0] >= 'a' && key[0] <= 'z')
+                || (key[0] >= '0' && key[0] <= '9') )) {
             keysym = (int)key[0];
-            return true;
         } else {
-            //If the string contains any of the substrings shown below
-            //then remove it from the string. At the end there
-            //should be only one character left which will be the letter
-            string::size_type pos;
-            pos = key.find("shift+");
-            if (pos != string::npos) {
-                mod |= KMOD_SHIFT;
-                key.erase(pos,6);
-            }
-            pos = key.find("ctrl+");
-            if (pos != string::npos) {
-                mod |= KMOD_CTRL;
-                key.erase(pos,5);
-            }
-            pos = key.find("alt+");
-            if (pos != string::npos) {
-                mod |= KMOD_ALT;
-                key.erase(pos,4);
-            }
-            pos = key.find("s+");
-            if (pos != string::npos) {
-                mod |= KMOD_SHIFT;
-                key.erase(pos,2);
-            }
-            pos = key.find("c+");
-            if (pos != string::npos) {
-                mod |= KMOD_CTRL;
-                key.erase(pos,2);
-            }
-            pos = key.find("a+");
-            if (pos != string::npos) {
-                mod |= KMOD_ALT;
-                key.erase(pos,2);
-            }
-            if (key.size() == 1) {
-                keysym = (int)key[0];
-                return true;
+            auto iter = keyMap.find(key);
+            if (iter != keyMap.end()) {
+                keysym = iter->second;
+            } else {
+                return false;
             }
         }
-        LogWarning << "Could not parse keybinding: " << _key << endLog;
-        return false;
+        return true;
     }
 
 }
